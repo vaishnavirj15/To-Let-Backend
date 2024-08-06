@@ -1,5 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const { connectDB } = require("./config/db.js");
 
@@ -14,7 +16,17 @@ app.use(
   })
 );
 
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }, // Set to true in production with HTTPS
+  })
+);
+
 app.use(express.json({ limit: "20kb" }));
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 
 // *******Dont touch above **********
@@ -24,10 +36,12 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 //eg.
 //route import
 const propertyRouter = require("./routes/propertyRoutes.js");
+const authRoutes = require("./routes/authRoutes");
 
 //route declaration
 //http://localhost:8000/api/v1/property/add-property
 app.use("/api/v1/property", propertyRouter);
+app.use("/api/v1/auth", authRoutes);
 
 // *******Dont touch below **********
 connectDB()
