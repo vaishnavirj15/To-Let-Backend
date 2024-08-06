@@ -7,8 +7,8 @@ const router = express.Router();
 router.route("/add-property").post(
   upload.fields([
     {
-      name: "image",
-      maxCount: 1,
+      name: "images",
+      maxCount: 5, // max count
     },
   ]),
   addProperty

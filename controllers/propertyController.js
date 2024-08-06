@@ -2,38 +2,31 @@ const Property = require("../models/propertyModel.js");
 const { uploadOnCloudinary } = require("../utils/cloudinary.js");
 
 const addProperty = async (req, res) => {
-  /* 
-    images and cloudinary logic starts here
-  */
   try {
-    let imageLocalPath;
-    if (
-      req.files &&
-      Array.isArray(req.files.image) &&
-      req.files.image.length > 0
-    ) {
-      imageLocalPath = req.files.image[0].path;
+    /**
+     * Cloudinary logic to handle multiple files
+     */
+    if (!req.files || !req.files.images || req.files.images.length === 0) {
+      return res.status(400).json({ message: "Image files are required" });
     }
 
-    console.log(imageLocalPath);
+    const imageLocalPaths = req.files.images.map((file) => file.path);
 
-    if (!imageLocalPath) {
-      return res.status(400).json({ message: "Image file is required" });
+    const uploadPromises = imageLocalPaths.map((path) =>
+      uploadOnCloudinary(path)
+    );
+    const imgResults = await Promise.all(uploadPromises);
+
+    const failedUploads = imgResults.filter((result) => !result);
+    if (failedUploads.length > 0) {
+      return res.status(400).json({ message: "Failed to upload some images" });
     }
 
-    const img = await uploadOnCloudinary(imageLocalPath);
-
-    console.log(img);
-
-    if (!img) {
-      return res.status(400).json({ message: "Failed to upload image" });
-    }
+    const imageUrls = imgResults.map((result) => result.url);
 
     const property = await Property.create({
-      photos: img.url,
+      photos: imageUrls,
     });
-
-    console.log(property);
 
     if (!property) {
       return res
@@ -49,10 +42,6 @@ const addProperty = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
-
-  /**
-   *image and cloudinary logic ends here
-   */
 };
 
 //logic for update properties
