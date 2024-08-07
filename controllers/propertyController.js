@@ -176,44 +176,38 @@ const updateProperty = async (req, res) => {
       commentByAnalyst,
       locationLink,
     } = req.body;
-
-    // Validate required fields
-    if (!rent || !address || !bhk) {
-      return res.status(400).json({
-        message: "Rent, address, and BHK are required fields",
-      });
-    }
+    console.log(req.body);
 
     // Update the property fields
-    property.ownerName = ownerName || property.ownerName;
+    property.ownerName = ownerName ?? property.ownerName;
     property.ownersContactNumber =
-      ownersContactNumber || property.ownersContactNumber;
+      ownersContactNumber ?? property.ownersContactNumber;
     property.ownersAlternateContactNumber =
-      ownersAlternateContactNumber || property.ownersAlternateContactNumber;
-    property.locality = locality || property.locality;
-    property.address = address || property.address;
-    property.spaceType = spaceType || property.spaceType;
-    property.propertyType = propertyType || property.propertyType;
+      ownersAlternateContactNumber ?? property.ownersAlternateContactNumber;
+    property.locality = locality ?? property.locality;
+    property.address = address ?? property.address;
+    property.spaceType = spaceType ?? property.spaceType;
+    property.propertyType = propertyType ?? property.propertyType;
     property.currentResidenceOfOwner =
-      currentResidenceOfOwner || property.currentResidenceOfOwner;
-    property.rent = rent || property.rent;
-    property.concession = concession || property.concession;
+      currentResidenceOfOwner ?? property.currentResidenceOfOwner;
+    property.rent = rent ?? property.rent;
+    property.concession = concession ?? property.concession;
     property.petsAllowed =
       petsAllowed !== undefined ? petsAllowed : property.petsAllowed;
-    property.preference = preference || property.preference;
-    property.bachelors = bachelors || property.bachelors;
-    property.type = type || property.type;
-    property.bhk = bhk || property.bhk;
-    property.floor = floor || property.floor;
-    property.nearestLandmark = nearestLandmark || property.nearestLandmark;
-    property.typeOfWashroom = typeOfWashroom || property.typeOfWashroom;
-    property.coolingFacility = coolingFacility || property.coolingFacility;
+    property.preference = preference ?? property.preference;
+    property.bachelors = bachelors ?? property.bachelors;
+    property.type = type ?? property.type;
+    property.bhk = bhk ?? property.bhk;
+    property.floor = floor ?? property.floor;
+    property.nearestLandmark = nearestLandmark ?? property.nearestLandmark;
+    property.typeOfWashroom = typeOfWashroom ?? property.typeOfWashroom;
+    property.coolingFacility = coolingFacility ?? property.coolingFacility;
     property.carParking =
       carParking !== undefined ? carParking : property.carParking;
     property.subscriptionAmount =
-      subscriptionAmount || property.subscriptionAmount;
-    property.commentByAnalyst = commentByAnalyst || property.commentByAnalyst;
-    property.locationLink = locationLink || property.locationLink;
+      subscriptionAmount ?? property.subscriptionAmount;
+    property.commentByAnalyst = commentByAnalyst ?? property.commentByAnalyst;
+    property.locationLink = locationLink ?? property.locationLink;
 
     // Save the updated property
     const updatedProperty = await property.save();
@@ -229,6 +223,7 @@ const updateProperty = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
 //logic for delete property
 const deleteProperty = (req, res) => {};
 

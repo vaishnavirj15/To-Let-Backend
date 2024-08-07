@@ -2,6 +2,7 @@ const express = require("express");
 const {
   addProperty,
   GetProperty,
+  updateProperty,
 } = require("../controllers/propertyController.js");
 const upload = require("../middlewares/multer.js");
 
@@ -21,9 +22,9 @@ router.route("/add-property").post(
 
 router.route("/").get(GetProperty); //change names and methods according to your endpoints
 
-/*
-router.route("/").put(addProperty); //change names and methods according to your endpoints
+router.route("/update-property/:id").patch(updateProperty); //change names and methods according to your endpoints
 
+/*
 router.route("/").delete(addProperty); //change names and methods according to your endpoints
 
 */

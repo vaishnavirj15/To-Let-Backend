@@ -39,7 +39,6 @@ const PropertySchema = new Schema({
   currentResidenceOfOwner: {
     type: String,
     enum: ["Same City", "Same Place", "Different City"],
-    required: true,
   },
   rent: {
     type: Number,
