@@ -202,10 +202,29 @@ const updateProperty = async (req, res) => {
 //logic for delete property
 const deleteProperty = (req, res) => {};
 
+//logic for get all propertys
+const GetProperty = async(req ,res)=>{
+
+  try {
+    const data = await Property.find({});
+   //  console.log(` data length ${data.length}`)
+    if(data.length <= 0){
+     return res
+         .status(404)
+         .json({ message: "No Property found" });
+    }
+    return res.status(200).json(data);
+ 
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+   
 module.exports = {
   addProperty,
   updateProperty,
   deleteProperty,
+  GetProperty
 };
 
 /**
