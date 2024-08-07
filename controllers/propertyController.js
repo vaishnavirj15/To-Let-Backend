@@ -225,8 +225,48 @@ const updateProperty = async (req, res) => {
 };
 
 //logic for delete property
-const deleteProperty = (req, res) => {};
+const deleteProperty = async (req, res) => {
+  try {
+    const propertyId = req.params.id;
 
+    if (!propertyId) {
+      return res.status(400).json({ message: "Property ID is required" });
+    }
+
+    // Find the property by ID
+    let property = await Property.findById(propertyId);
+    if (!property) {
+      return res.status(404).json({ message: "Property not found" });
+    }
+
+    // Check if the authenticated user is the owner of the property
+    const user = await User.findById(property.userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "User associated with this property not found" });
+    }
+
+    // Check if the user is authorized to delete this property
+    // Assuming user ID is available in req.user from the middleware
+    const userId = req.user._id;
+    if (property.userId.toString() !== userId.toString()) {
+      return res
+        .status(403)
+        .json({ message: "Unauthorized: You do not own this property" });
+    }
+
+    // Delete the property
+    await Property.findByIdAndDelete(propertyId);
+
+    return res.status(200).json({
+      statusCode: 200,
+      message: "Property deleted successfully.",
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 //logic for get all propertys
 const GetProperty = async (req, res) => {
   try {
