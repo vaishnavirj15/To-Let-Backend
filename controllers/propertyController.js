@@ -281,11 +281,32 @@ const GetProperty = async (req, res) => {
   }
 };
 
+const getPropertyById = async (req, res) => {
+  try {
+    const propertyId = req.params.id;
+
+    if (!propertyId) {
+      return res.status(400).json({ message: "Property ID is required" });
+    }
+
+    const property = await Property.findById(propertyId);
+
+    if (!property) {
+      return res.status(404).json({ message: "Property not found" });
+    }
+
+    return res.status(200).json(property);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   addProperty,
   updateProperty,
   deleteProperty,
   GetProperty,
+  getPropertyById,
 };
 
 /**

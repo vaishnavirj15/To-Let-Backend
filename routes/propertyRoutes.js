@@ -4,6 +4,7 @@ const {
   GetProperty,
   updateProperty,
   deleteProperty,
+  getPropertyById,
 } = require("../controllers/propertyController.js");
 const upload = require("../middlewares/multer.js");
 
@@ -26,6 +27,8 @@ router.route("/").get(GetProperty); //change names and methods according to your
 router.route("/update-property/:id").patch(updateProperty); //change names and methods according to your endpoints
 
 router.route("/:id").delete(deleteProperty); //change names and methods according to your endpoints
+
+router.route("/:id").get(getPropertyById); //change names and methods according to your endpoints
 
 /*
 router.route("/").delete(addProperty); //change names and methods according to your endpoints
