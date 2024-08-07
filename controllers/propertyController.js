@@ -3,6 +3,32 @@ const { uploadOnCloudinary } = require("../utils/cloudinary.js");
 
 const addProperty = async (req, res) => {
   try {
+    const {
+      userId,
+      ownerName,
+      ownerContactNumber,
+      ownerAlternateNumber,
+      locality,
+      address,
+      spaceType,
+      propertyType,
+      currenResidenceOfOwner,
+      rent,
+      concession,
+      petsAllowed,
+      preference,
+      bachelors,
+      type,
+      bhk,
+      floor,
+      nearestLandmark,
+      typeOfWashroom,
+      coolingFacility,
+      carParking,
+      subcriptionAmount,
+      locationLink,
+    } = req.body;
+
     /**
      * Cloudinary logic to handle multiple files
      */
@@ -24,9 +50,34 @@ const addProperty = async (req, res) => {
 
     const imageUrls = imgResults.map((result) => result.url);
 
-    const property = await Property.create({
+    const data = {
+      userId,
+      ownerName,
+      ownerContactNumber,
+      ownerAlternateNumber,
+      locality,
+      address,
+      spaceType,
+      propertyType,
+      currenResidenceOfOwner,
+      rent,
+      concession,
+      petsAllowed,
+      preference,
+      bachelors,
+      type,
+      bhk,
+      floor,
+      nearestLandmark,
+      typeOfWashroom,
+      coolingFacility,
+      carParking,
+      subcriptionAmount,
+      locationLink,
       photos: imageUrls,
-    });
+    };
+
+    const property = await Property.create(data);
 
     if (!property) {
       return res
