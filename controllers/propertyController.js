@@ -46,12 +46,11 @@ const addProperty = async (req, res) => {
 
 //logic for update properties
 
+// Logic for updating properties
 const updateProperty = async (req, res) => {
   try {
-    const userId = req.user._id;
-
-    // Check if property ID is provided
     const propertyId = req.params.id;
+
     if (!propertyId) {
       return res.status(400).json({ message: "Property ID is required" });
     }
@@ -62,38 +61,86 @@ const updateProperty = async (req, res) => {
       return res.status(404).json({ message: "Property not found" });
     }
 
-    // Check if the authenticated user is the owner of the property
-    if (property.userId.toString() !== userId.toString()) {
+    // Find the user associated with this property
+    const user = await User.findById(property.userId);
+    if (!user) {
       return res
-        .status(403)
-        .json({ message: "Unauthorized: You do not own this property" });
+        .status(404)
+        .json({ message: "User associated with this property not found" });
     }
 
     // Get the fields from the update form
-    const { title, description, price, address, otherFields } = req.body;
+    const {
+      analystName,
+      ownerName,
+      ownersContactNumber,
+      ownersAlternateContactNumber,
+      locality,
+      address,
+      spaceType,
+      propertyType,
+      currentResidenceOfOwner,
+      rent,
+      concession,
+      petsAllowed,
+      preference,
+      bachelors,
+      type,
+      bhk,
+      floor,
+      nearestLandmark,
+      typeOfWashroom,
+      coolingFacility,
+      carParking,
+      subscriptionAmount,
+      commentByAnalyst,
+      locationLink,
+    } = req.body;
 
-    // Validate required fields (add more fields as required)
-    if (!title || !price || !address) {
+    // Validate required fields
+    if (!rent || !address || !bhk) {
       return res.status(400).json({
-        message: "Title, price, and address are required fields",
+        message: "Rent, address, and BHK are required fields",
       });
     }
 
     // Update the property fields
-    property.title = title || property.title;
-    property.description = description || property.description;
-    property.price = price || property.price;
+    property.analystName = analystName || property.analystName;
+    property.ownerName = ownerName || property.ownerName;
+    property.ownersContactNumber =
+      ownersContactNumber || property.ownersContactNumber;
+    property.ownersAlternateContactNumber =
+      ownersAlternateContactNumber || property.ownersAlternateContactNumber;
+    property.locality = locality || property.locality;
     property.address = address || property.address;
-    // Add other fields as needed
-    // property.otherFields = otherFields || property.otherFields;
+    property.spaceType = spaceType || property.spaceType;
+    property.propertyType = propertyType || property.propertyType;
+    property.currentResidenceOfOwner =
+      currentResidenceOfOwner || property.currentResidenceOfOwner;
+    property.rent = rent || property.rent;
+    property.concession = concession || property.concession;
+    property.petsAllowed =
+      petsAllowed !== undefined ? petsAllowed : property.petsAllowed;
+    property.preference = preference || property.preference;
+    property.bachelors = bachelors || property.bachelors;
+    property.type = type || property.type;
+    property.bhk = bhk || property.bhk;
+    property.floor = floor || property.floor;
+    property.nearestLandmark = nearestLandmark || property.nearestLandmark;
+    property.typeOfWashroom = typeOfWashroom || property.typeOfWashroom;
+    property.coolingFacility = coolingFacility || property.coolingFacility;
+    property.carParking =
+      carParking !== undefined ? carParking : property.carParking;
+    property.subscriptionAmount =
+      subscriptionAmount || property.subscriptionAmount;
+    property.commentByAnalyst = commentByAnalyst || property.commentByAnalyst;
+    property.locationLink = locationLink || property.locationLink;
 
     // Save the updated property
     const updatedProperty = await property.save();
 
-    // Log the updated property
     console.log(updatedProperty);
 
-    // Send the updated property as a response
     return res.status(200).json({
       statusCode: 200,
       property: updatedProperty,
@@ -103,8 +150,7 @@ const updateProperty = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
-//logic for delet property
+//logic for delete property
 const deleteProperty = (req, res) => {};
 
 module.exports = {
