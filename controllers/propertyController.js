@@ -6,8 +6,8 @@ const addProperty = async (req, res) => {
     const {
       userId,
       ownerName,
-      ownerContactNumber,
-      ownerAlternateNumber,
+      ownersContactNumber,
+      ownersAlternateContactNumber,
       locality,
       address,
       spaceType,
@@ -53,8 +53,8 @@ const addProperty = async (req, res) => {
     const data = {
       userId,
       ownerName,
-      ownerContactNumber,
-      ownerAlternateNumber,
+      ownersContactNumber,
+      ownersAlternateContactNumber,
       locality,
       address,
       spaceType,
@@ -122,7 +122,6 @@ const updateProperty = async (req, res) => {
 
     // Get the fields from the update form
     const {
-      analystName,
       ownerName,
       ownersContactNumber,
       ownersAlternateContactNumber,
@@ -156,7 +155,6 @@ const updateProperty = async (req, res) => {
     }
 
     // Update the property fields
-    property.analystName = analystName || property.analystName;
     property.ownerName = ownerName || property.ownerName;
     property.ownersContactNumber =
       ownersContactNumber || property.ownersContactNumber;

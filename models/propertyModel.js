@@ -115,12 +115,3 @@ const PropertySchema = new Schema({
 
 const Property = mongoose.model("Property", PropertySchema);
 module.exports = Property;
-
-/* 
-above code is for everyone 
-uncomment the above code when doing your task
-
-
-below code is for cloudinady testing purpose so comment that when doing your 
-
-*/
