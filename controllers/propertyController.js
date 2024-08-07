@@ -301,12 +301,38 @@ const getPropertyById = async (req, res) => {
   }
 };
 
+const getFilteredProperties = async (req, res) => {
+  try {
+    const { minPrice, maxPrice, bhk, locality, petsAllowed } = req.query;
+    const filter = {};
+
+    if (minPrice) filter.rent = { ...filter.rent, $gte: Number(minPrice) };
+    if (maxPrice) filter.rent = { ...filter.rent, $lte: Number(maxPrice) };
+    if (bhk) filter.bhk = Number(bhk);
+    if (locality) filter.locality = locality;
+    if (petsAllowed !== undefined) filter.petsAllowed = petsAllowed === "true";
+
+    const properties = await Property.find(filter);
+    res.status(200).json({
+      success: true,
+      data: properties,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   addProperty,
   updateProperty,
   deleteProperty,
   GetProperty,
   getPropertyById,
+  getFilteredProperties,
 };
 
 /**
