@@ -33,8 +33,8 @@ const addProperty = async (req, res) => {
       !(
         userId ||
         ownerName ||
-        ownerContactNumber ||
-        ownerAlternateNumber ||
+        ownersContactNumber ||
+        ownersAlternateContactNumber ||
         locality ||
         address ||
         spaceType ||
