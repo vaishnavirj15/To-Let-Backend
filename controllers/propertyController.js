@@ -29,6 +29,36 @@ const addProperty = async (req, res) => {
       locationLink,
     } = req.body;
 
+    if (
+      !(
+        userId ||
+        ownerName ||
+        ownerContactNumber ||
+        ownerAlternateNumber ||
+        locality ||
+        address ||
+        spaceType ||
+        propertyType ||
+        currenResidenceOfOwner ||
+        rent ||
+        concession ||
+        petsAllowed ||
+        preference ||
+        bachelors ||
+        type ||
+        bhk ||
+        floor ||
+        nearestLandmark ||
+        typeOfWashroom ||
+        coolingFacility ||
+        carParking ||
+        subcriptionAmount ||
+        locationLink
+      )
+    ) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
     /**
      * Cloudinary logic to handle multiple files
      */
