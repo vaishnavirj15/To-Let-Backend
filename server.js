@@ -1,26 +1,24 @@
 const express = require("express");
+const dotenv = require("dotenv");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
-const connectDB = require("./config/db");
-const authRoutes = require("./routes/authRoutes");
+const cors = require("cors");
+const { connectDB } = require("./config/db.js");
 const contactRoutes = require("./routes/contactRoutes.js");
 const { errorHandler } = require("./middlewares/errorHandler.js");
-const cors = require("cors");
-require("dotenv").config();
+
+dotenv.config();
 
 const app = express();
 
-// Connect to MongoDB
-connectDB();
-
-// Middleware
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CORS_ORIGIN,
+    credentials: true,
   })
-); // add origin url if needed
-app.use(express.json());
-app.use(cookieParser());
+);
+
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -30,13 +28,36 @@ app.use(
   })
 );
 
-// Routes
+app.use(express.json({ limit: "20kb" }));
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: true, limit: "16kb" }));
+
+// *******Dont touch above **********
+
+// add your routes here import here, also add here
+
+//eg.
+//route import
+const propertyRouter = require("./routes/propertyRoutes.js");
+const authRoutes = require("./routes/authRoutes");
+
+//route declaration
+//http://localhost:8000/api/v1/property/add-property
+app.use("/api/v1/property", propertyRouter);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/contact", contactRoutes);
 
 // error handler middleware
 app.use(errorHandler);
 
-// Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// *******Dont touch below **********
+connectDB()
+  .then(() => {
+    app.listen(process.env.PORT || 8000, () => {
+      console.log(`✌ server is running on port : ${process.env.PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.log("MONGODB Connection Failed !!", error);
+  });
