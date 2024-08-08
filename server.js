@@ -3,6 +3,8 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
+const contactRoutes = require("./routes/contactRoutes.js");
+const { errorHandler } = require("./middlewares/errorHandler.js");
 const cors = require("cors");
 require("dotenv").config();
 
@@ -30,6 +32,10 @@ app.use(
 
 // Routes
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/contact", contactRoutes);
+
+// error handler middleware
+app.use(errorHandler);
 
 // Start server
 const PORT = process.env.PORT || 5000;
