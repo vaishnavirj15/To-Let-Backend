@@ -4,6 +4,8 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const { connectDB } = require("./config/db.js");
+const contactRoutes = require("./routes/contactRoutes.js");
+const { errorHandler } = require("./middlewares/errorHandler.js");
 
 dotenv.config();
 
@@ -15,6 +17,7 @@ app.use(
     credentials: true,
   })
 );
+
 
 app.use(
   session({
@@ -42,6 +45,11 @@ const authRoutes = require("./routes/authRoutes");
 //http://localhost:8000/api/v1/property/add-property
 app.use("/api/v1/property", propertyRouter);
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/contact", contactRoutes);
+
+// error handler middleware
+app.use(errorHandler);
+
 
 // *******Dont touch below **********
 connectDB()
