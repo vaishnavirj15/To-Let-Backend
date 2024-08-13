@@ -182,11 +182,6 @@ exports.resetPassword = async (req, res) => {
   }
 };
 
-const User = require("../models/userModel");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
-
 exports.register = async (req, res) => {
   try {
     console.log(req.body);
