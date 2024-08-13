@@ -122,55 +122,24 @@ exports.resetPassword = async (req, res) => {
   }
 };
 
-exports.register = async (req, res) => {
+// Send Registration Email
+function sendRegistrationEmail(email) {
   try {
-    console.log(req.body);
-    const { username, email, password, phone, role, userType, answer } =
-      req.body;
-
-    // Check if user already exists
-    let isUserExist = await User.findOne({ email });
-
-    if (isUserExist) {
-      console.log("userExist");
-      return res.status(400).json("User already exists");
-    }
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    // Create a new user
-    const user = new User({
-      username,
-      email,
-      password: hashedPassword,
-      phoneNumber: phone,
-      role,
-      userType,
-      firstSchool: answer,
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+      secure: false,
     });
 
-    await user.save();
-
-    function sendRegistrationEmail(email) {
-      try {
-        const transporter = nodemailer.createTransport({
-          service: "Gmail",
-          auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-          },
-          secure: false,
-        });
-        const mailOptions = {
-          from: "toletglobetech@gmail.com",
-          to: email,
-          subject: "Registration Successful",
-          text: "Thank you for registering with us!",
-          //     html: `
-          //     <p>Thank you for registering with us!</p>
-          // `,
-        };
+    const mailOptions = {
+      from: "toletglobetech@gmail.com",
+      to: email,
+      subject: "Registration Successful",
+      text: "Thank you for registering with us!",
+    };
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) console.log("Error sending mail: ", error);
