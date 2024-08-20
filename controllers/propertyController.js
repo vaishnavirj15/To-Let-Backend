@@ -1,6 +1,8 @@
 const Property = require("../models/propertyModel.js");
 const { uploadOnCloudinary } = require("../utils/cloudinary.js");
 
+
+
 const addProperty = async (req, res) => {
   try {
     const {
