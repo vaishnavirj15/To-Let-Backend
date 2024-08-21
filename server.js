@@ -1,5 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
+dotenv.config();
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -9,8 +10,6 @@ const propertyRouter = require("./routes/propertyRoutes.js");
 const authRoutes = require("./routes/authRoutes");
 const blogRoutes = require("./routes/blogRoutes");
 const { errorHandler } = require("./middlewares/errorHandler.js");
-
-dotenv.config();
 
 const app = express();
 
