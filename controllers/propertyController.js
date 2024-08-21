@@ -1,8 +1,6 @@
 const Property = require("../models/propertyModel.js");
 const { uploadOnCloudinary } = require("../utils/cloudinary.js");
 
-
-
 const addProperty = async (req, res) => {
   try {
     const {
@@ -14,7 +12,7 @@ const addProperty = async (req, res) => {
       address,
       spaceType,
       propertyType,
-      currenResidenceOfOwner,
+      currentResidenceOfOwner, //correct name
       rent,
       concession,
       petsAllowed,
@@ -41,7 +39,7 @@ const addProperty = async (req, res) => {
         address ||
         spaceType ||
         propertyType ||
-        currenResidenceOfOwner ||
+        currentResidenceOfOwner ||
         rent ||
         concession ||
         petsAllowed ||
@@ -91,7 +89,7 @@ const addProperty = async (req, res) => {
       address,
       spaceType,
       propertyType,
-      currenResidenceOfOwner,
+      currentResidenceOfOwner,
       rent,
       concession,
       petsAllowed,
