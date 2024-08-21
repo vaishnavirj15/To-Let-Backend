@@ -7,7 +7,8 @@ const crypto = require("crypto");
 // Register User
 exports.register = async (req, res) => {
   try {
-    const { username, email, password, phone, role, userType, answer } = req.body;
+    const { username, email, password, phone, role, userType, answer } =
+      req.body;
 
     // Check if user already exists
     let isUserExist = await User.findOne({ email });
@@ -47,7 +48,8 @@ exports.login = async (req, res) => {
 
     // Check if user exists
     let user = await User.findOne({ email });
-    if (!user) return res.status(400).json("No user is registered with this email");
+    if (!user)
+      return res.status(400).json("No user is registered with this email");
 
     // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
@@ -55,8 +57,10 @@ exports.login = async (req, res) => {
 
     // Generate JWT
     const payload = { user: { id: user.id } };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "3d" });
-    
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "3d",
+    });
+
     res.json({ token });
   } catch (err) {
     console.error(err.message);
