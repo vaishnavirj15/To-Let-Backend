@@ -84,7 +84,7 @@ exports.forgotPassword = async (req, res) => {
 
     await user.save();
 
-    const resetURL = `http://localhost:3000/auth/reset-password?token=${resetToken}`;
+    const resetURL = `https://tolet-globe.vercel/auth/reset-password?token=${resetToken}`;
     sendPasswordResetEmail(email, resetURL);
 
     res.json("Password reset link sent");
