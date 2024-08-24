@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
+const { CLIENT_URL } = require("../utils/constants");
 
 // Register User
 exports.register = async (req, res) => {
@@ -71,10 +72,11 @@ exports.login = async (req, res) => {
 // Forgot Password
 exports.forgotPassword = async (req, res) => {
   try {
-    const { email, securityQuestionAnswer } = req.body;
+    const { email, answer } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user || user.securityQuestionAnswer !== securityQuestionAnswer) {
+
+    if (!user || user.firstSchool !== answer) {
       return res.status(404).json("User not found or invalid details");
     }
 
@@ -84,10 +86,12 @@ exports.forgotPassword = async (req, res) => {
 
     await user.save();
 
-    const resetURL = `https://tolet-globe.vercel/auth/reset-password?token=${resetToken}`;
+
+    const resetURL = `${CLIENT_URL}/auth/reset-password?token=${resetToken}`;
+
     sendPasswordResetEmail(email, resetURL);
 
-    res.json("Password reset link sent");
+    res.json({ message: "Password reset link sent", link: resetURL });
   } catch (err) {
     console.error(err.message);
     res.status(500).json("Internal server error");
@@ -104,7 +108,7 @@ exports.resetPassword = async (req, res) => {
       resetTokenExpiry: { $gt: Date.now() },
     });
 
-    if (!user) return res.status(400).json("Invalid or expired token");
+    if (!user) return res.status(400).json("Session expired");
 
     // Hash the new password
     const hashedPassword = await bcrypt.hash(password, 10);

@@ -21,6 +21,7 @@ router.route("/add-property").post(
   addProperty
 ); //change names and methods according to your endpoints
 
+
 //eg.
 
 router.route("/filter").get(getFilteredProperties);

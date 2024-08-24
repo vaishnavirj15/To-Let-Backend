@@ -12,6 +12,7 @@ const blogSchema = new Schema({
   likes: Number,
   date: Date,
   intro: String,
+  slug: String,
 });
 
 const Blog = mongoose.model("Blog", blogSchema);
