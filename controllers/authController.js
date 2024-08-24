@@ -8,7 +8,8 @@ const { CLIENT_URL } = require("../utils/constants");
 // Register User
 exports.register = async (req, res) => {
   try {
-    const { username, email, password, phone, role, userType, answer } = req.body;
+    const { username, email, password, phone, role, userType, answer } =
+      req.body;
 
     // Check if user already exists
     let isUserExist = await User.findOne({ email });
@@ -85,7 +86,9 @@ exports.forgotPassword = async (req, res) => {
 
     await user.save();
 
+
     const resetURL = `${CLIENT_URL}/auth/reset-password?token=${resetToken}`;
+
     sendPasswordResetEmail(email, resetURL);
 
     res.json({ message: "Password reset link sent", link: resetURL });
