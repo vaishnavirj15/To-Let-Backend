@@ -38,7 +38,6 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 
 // add your routes here import here, also add here
 app.use((req, res, next) => {
-  console.log("HEY");
   next(); // Passes control to the next middleware or route handler
 });
 //eg.
