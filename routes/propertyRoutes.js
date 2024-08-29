@@ -6,6 +6,8 @@ const {
   deleteProperty,
   getPropertyById,
   getFilteredProperties,
+  addReview,
+  deleteReview,
 } = require("../controllers/propertyController.js");
 const upload = require("../middlewares/multer.js");
 
@@ -33,6 +35,10 @@ router.route("/update-property/:id").patch(updateProperty); //change names and m
 router.route("/:id").delete(deleteProperty); //change names and methods according to your endpoints
 
 router.route("/:id").get(getPropertyById); //change names and methods according to your endpoints
+
+router.post("/add-review", addReview);
+
+router.delete("/reviews/:id", deleteReview);
 
 //e.g
 // GET http://localhost:8000/api/v1/property/filter?minPrice=10000&maxPrice=20000

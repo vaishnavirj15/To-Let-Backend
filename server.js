@@ -9,6 +9,7 @@ const contactRoutes = require("./routes/contactRoutes.js");
 const propertyRouter = require("./routes/propertyRoutes.js");
 const authRoutes = require("./routes/authRoutes");
 const blogRoutes = require("./routes/blogRoutes");
+const userRoutes = require("./routes/userRoutes");
 const { errorHandler } = require("./middlewares/errorHandler.js");
 
 const app = express();
@@ -48,6 +49,7 @@ app.use("/api/v1/property", propertyRouter);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/contact", contactRoutes);
 app.use("/api/v1/blog", blogRoutes);
+app.use("/api/v1/user", userRoutes);
 
 // error handler middleware
 app.use(errorHandler);
