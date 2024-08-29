@@ -308,7 +308,12 @@ const getFilteredProperties = async (req, res) => {
 
     if (minPrice) filter.rent = { ...filter.rent, $gte: Number(minPrice) };
     if (maxPrice) filter.rent = { ...filter.rent, $lte: Number(maxPrice) };
-    if (bhk) filter.bhk = Number(bhk);
+
+    if (bhk) {
+      const bhkNumber = Number(bhk);
+      if (!isNaN(bhkNumber)) filter.bhk = bhkNumber;
+    }
+
     if (locality) filter.locality = locality;
     if (petsAllowed !== undefined) filter.petsAllowed = petsAllowed === "true";
 
