@@ -304,26 +304,94 @@ const getPropertyById = async (req, res) => {
 
 const getFilteredProperties = async (req, res) => {
   try {
-    const { minPrice, maxPrice, bhk, locality, petsAllowed } = req.query;
+    const {
+      minPrice,
+      maxPrice,
+      bhk,
+      locality,
+      petsAllowed,
+      spaceType,
+      propertyType,
+      currentResidenceOfOwner,
+      preference,
+      bachelors,
+      type,
+      floor,
+      nearestLandmark,
+      typeOfWashroom,
+      coolingFacility,
+      carParking,
+      concession,
+    } = req.query;
+
     const filter = {};
 
+    // Handling price range filter
     if (minPrice) filter.rent = { ...filter.rent, $gte: Number(minPrice) };
     if (maxPrice) filter.rent = { ...filter.rent, $lte: Number(maxPrice) };
 
+    // Handling BHK filter
     if (bhk) {
       const bhkNumber = Number(bhk);
       if (!isNaN(bhkNumber)) filter.bhk = bhkNumber;
     }
 
+    // Handling locality filter
     if (locality) filter.locality = locality;
+
+    // Handling petsAllowed filter
     if (petsAllowed !== undefined) filter.petsAllowed = petsAllowed === "true";
 
+    // Handling spaceType filter
+    if (spaceType) filter.spaceType = spaceType;
+
+    // Handling propertyType filter
+    if (propertyType) filter.propertyType = propertyType;
+
+    // Handling currentResidenceOfOwner filter
+    if (currentResidenceOfOwner)
+      filter.currentResidenceOfOwner = currentResidenceOfOwner;
+
+    // Handling preference filter
+    if (preference) filter.preference = preference;
+
+    // Handling bachelors filter
+    if (bachelors) filter.bachelors = bachelors;
+
+    // Handling type (furnishing) filter
+    if (type) filter.type = type;
+
+    // Handling floor filter
+    if (floor) {
+      const floorNumber = Number(floor);
+      if (!isNaN(floorNumber)) filter.floor = floorNumber;
+    }
+
+    // Handling nearestLandmark filter
+    if (nearestLandmark) filter.nearestLandmark = nearestLandmark;
+
+    // Handling typeOfWashroom filter
+    if (typeOfWashroom) filter.typeOfWashroom = typeOfWashroom;
+
+    // Handling coolingFacility filter
+    if (coolingFacility) filter.coolingFacility = coolingFacility;
+
+    // Handling carParking filter
+    if (carParking !== undefined) filter.carParking = carParking === "true";
+
+    // Handling concession filter
+    if (concession !== undefined) filter.concession = concession === "true";
+
+    // Fetch filtered properties from the database
     const properties = await Property.find(filter);
+
+    // Send successful response with filtered properties
     res.status(200).json({
       success: true,
       data: properties,
     });
   } catch (error) {
+    // Send error response
     res.status(500).json({
       success: false,
       message: "Server Error",
