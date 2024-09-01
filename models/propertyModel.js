@@ -110,6 +110,12 @@ const PropertySchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  reviews: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Review",
+    },
+  ],
 });
 
 const Property = mongoose.model("Property", PropertySchema);

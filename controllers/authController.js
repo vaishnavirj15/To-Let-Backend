@@ -3,11 +3,13 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
+const { CLIENT_URL } = require("../utils/constants");
 
 // Register User
 exports.register = async (req, res) => {
   try {
-    const { username, email, password, phone, role, userType, answer } = req.body;
+    const { username, email, password, phone, role, userType, answer } =
+      req.body;
 
     // Check if user already exists
     let isUserExist = await User.findOne({ email });
@@ -47,7 +49,8 @@ exports.login = async (req, res) => {
 
     // Check if user exists
     let user = await User.findOne({ email });
-    if (!user) return res.status(400).json("No user is registered with this email");
+    if (!user)
+      return res.status(400).json("No user is registered with this email");
 
     // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
@@ -55,8 +58,10 @@ exports.login = async (req, res) => {
 
     // Generate JWT
     const payload = { user: { id: user.id } };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "3d" });
-    
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "3d",
+    });
+
     res.json({ token });
   } catch (err) {
     console.error(err.message);
@@ -67,10 +72,11 @@ exports.login = async (req, res) => {
 // Forgot Password
 exports.forgotPassword = async (req, res) => {
   try {
-    const { email, securityQuestionAnswer } = req.body;
+    const { email, answer } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user || user.securityQuestionAnswer !== securityQuestionAnswer) {
+
+    if (!user || user.firstSchool !== answer) {
       return res.status(404).json("User not found or invalid details");
     }
 
@@ -80,10 +86,12 @@ exports.forgotPassword = async (req, res) => {
 
     await user.save();
 
-    const resetURL = `http://localhost:3000/auth/reset-password?token=${resetToken}`;
+
+    const resetURL = `${CLIENT_URL}/auth/reset-password?token=${resetToken}`;
+
     sendPasswordResetEmail(email, resetURL);
 
-    res.json("Password reset link sent");
+    res.json({ message: "Password reset link sent", link: resetURL });
   } catch (err) {
     console.error(err.message);
     res.status(500).json("Internal server error");
@@ -100,7 +108,7 @@ exports.resetPassword = async (req, res) => {
       resetTokenExpiry: { $gt: Date.now() },
     });
 
-    if (!user) return res.status(400).json("Invalid or expired token");
+    if (!user) return res.status(400).json("Session expired");
 
     // Hash the new password
     const hashedPassword = await bcrypt.hash(password, 10);
