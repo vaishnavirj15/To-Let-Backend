@@ -10,10 +10,12 @@ const {
   deleteReview,
 } = require("../controllers/propertyController.js");
 const upload = require("../middlewares/multer.js");
+const authenticate = require("../middlewares/authMiddleware.js");
 
 const router = express.Router();
 
 router.route("/add-property").post(
+  authenticate,
   upload.fields([
     {
       name: "images",
@@ -22,7 +24,6 @@ router.route("/add-property").post(
   ]),
   addProperty
 ); //change names and methods according to your endpoints
-
 
 //eg.
 

@@ -4,8 +4,9 @@ const { uploadOnCloudinary } = require("../utils/cloudinary.js");
 
 const addProperty = async (req, res) => {
   try {
+    const userId = req.userId;
+
     const {
-      userId,
       ownerName,
       ownersContactNumber,
       ownersAlternateContactNumber,
@@ -26,38 +27,56 @@ const addProperty = async (req, res) => {
       typeOfWashroom,
       coolingFacility,
       carParking,
-      subcriptionAmount,
+      subscriptionAmount,
       locationLink,
     } = req.body;
 
     if (
       !(
-        userId ||
-        ownerName ||
-        ownersContactNumber ||
-        ownersAlternateContactNumber ||
-        locality ||
-        address ||
-        spaceType ||
-        propertyType ||
-        currentResidenceOfOwner ||
-        rent ||
-        concession ||
-        petsAllowed ||
-        preference ||
-        bachelors ||
-        type ||
-        bhk ||
-        floor ||
-        nearestLandmark ||
-        typeOfWashroom ||
-        coolingFacility ||
-        carParking ||
-        subcriptionAmount ||
+        ownerName &&
+        ownersContactNumber &&
+        locality &&
+        address &&
+        spaceType &&
+        propertyType &&
+        currentResidenceOfOwner &&
+        rent !== undefined &&
+        concession !== undefined &&
+        petsAllowed !== undefined &&
+        preference &&
+        bachelors &&
+        type &&
+        bhk !== undefined &&
+        floor !== undefined &&
+        nearestLandmark &&
+        typeOfWashroom &&
+        coolingFacility &&
+        carParking !== undefined &&
+        subscriptionAmount !== undefined &&
         locationLink
       )
     ) {
       return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const formattedConcession = concession === "true";
+    const formattedPetsAllowed = petsAllowed === "true";
+    const formattedCarParking = carParking === "true";
+
+    const formattedRent = Number(rent);
+    const formattedSubscriptionAmount = Number(subscriptionAmount);
+    const formattedBhk = Number(bhk);
+    const formattedFloor = Number(floor);
+
+    if (
+      isNaN(formattedRent) ||
+      isNaN(formattedSubscriptionAmount) ||
+      isNaN(formattedBhk) ||
+      isNaN(formattedFloor)
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Numeric fields must be valid numbers" });
     }
 
     /**
@@ -91,19 +110,19 @@ const addProperty = async (req, res) => {
       spaceType,
       propertyType,
       currentResidenceOfOwner,
-      rent,
-      concession,
-      petsAllowed,
+      rent: formattedRent,
+      concession: formattedConcession,
+      petsAllowed: formattedPetsAllowed,
       preference,
       bachelors,
       type,
-      bhk,
-      floor,
+      bhk: formattedBhk,
+      floor: formattedFloor,
       nearestLandmark,
       typeOfWashroom,
       coolingFacility,
-      carParking,
-      subcriptionAmount,
+      carParking: formattedCarParking,
+      subscriptionAmount: formattedSubscriptionAmount,
       locationLink,
       photos: imageUrls,
     };
