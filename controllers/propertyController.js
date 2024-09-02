@@ -309,7 +309,7 @@ const getPropertyById = async (req, res) => {
       return res.status(400).json({ message: "Property ID is required" });
     }
 
-    const property = await Property.findById(propertyId);
+    const property = await Property.findById(propertyId).populate("reviews");
 
     if (!property) {
       return res.status(404).json({ message: "Property not found" });
