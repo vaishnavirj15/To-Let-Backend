@@ -1,3 +1,4 @@
+
 const { asyncHandler } = require("../utils/asyncHandler");
 const { ApiError } = require("../utils/ApiError");
 const { ApiResponse } = require("../utils/ApiResponse.js");
@@ -16,8 +17,8 @@ const getAllEnquiries = asyncHandler(async (req, res) => {
 });
 
 const createEnquiry = asyncHandler(async (req, res) => {
-  const { name, email, message, topic } = req.body;
-  const requiredFields = { name, email, message, topic };
+  const { name, email, phone, message, topic } = req.body;
+  const requiredFields = { name, email,phone, message, topic };
 
   for (const [key, value] of Object.entries(requiredFields)) {
     if (!value) {
@@ -25,7 +26,7 @@ const createEnquiry = asyncHandler(async (req, res) => {
     }
   }
 
-  const enquiry = await Contact.create({ name, email, message, topic });
+  const enquiry = await Contact.create({ name, email,phone, message, topic });
 
   res
     .status(201)
@@ -64,9 +65,47 @@ const deleteEnquiry = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, null, "Enquiry deleted successfully"));
 });
 
+//submit form info send to mail
+
+const submitData =(req , res) => {
+  try {
+    const { name, email,phone, message, topic } = req.body;
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+          user: process.env.SMTP_USER, 
+          pass: process.env.SMTP_PASS,   
+      },
+      secure: false
+  });
+  const mailOptions = {
+    from: email,  
+    to: 'toletglobetech@gmail.com',  // Recipient email address
+    subject: 'New Form Submission',
+    text: `Name: ${name}\nEmail: ${email}\n Phone:${phone}\nMessage: ${message}\n Topic: ${topic}`
+};
+
+transporter.sendMail(mailOptions, (error, info) => {
+  if (error) {
+      console.log(error);
+      res.status(400).send('Something went wrong.');
+  } else {
+      console.log('Email sent: ' + info.response);
+      res.status(200).send('Form submitted successfully!');
+  }
+});
+
+  } catch (err) {
+    console.error(err.message);
+}   res.status(500).json("Internal server error");
+}
+
+
 module.exports = {
   createEnquiry,
   getAllEnquiries,
   getEnquiryById,
   deleteEnquiry,
+  submitData
 };
