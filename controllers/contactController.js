@@ -1,8 +1,8 @@
-
 const { asyncHandler } = require("../utils/asyncHandler");
 const { ApiError } = require("../utils/ApiError");
 const { ApiResponse } = require("../utils/ApiResponse.js");
 const Contact = require("../models/contactModel.js");
+const nodemailer = require("nodemailer");
 
 const getAllEnquiries = asyncHandler(async (req, res) => {
   const enquiries = await Contact.find({});
@@ -18,7 +18,7 @@ const getAllEnquiries = asyncHandler(async (req, res) => {
 
 const createEnquiry = asyncHandler(async (req, res) => {
   const { name, email, phone, message, topic } = req.body;
-  const requiredFields = { name, email,phone, message, topic };
+  const requiredFields = { name, email, phone, message, topic };
 
   for (const [key, value] of Object.entries(requiredFields)) {
     if (!value) {
@@ -26,7 +26,7 @@ const createEnquiry = asyncHandler(async (req, res) => {
     }
   }
 
-  const enquiry = await Contact.create({ name, email,phone, message, topic });
+  const enquiry = await Contact.create({ name, email, phone, message, topic });
 
   res
     .status(201)
@@ -59,53 +59,52 @@ const deleteEnquiry = asyncHandler(async (req, res) => {
   if (!enquiry) {
     throw new ApiError(404, "Enquiry not found");
   }
-
   res
     .status(200)
     .json(new ApiResponse(200, null, "Enquiry deleted successfully"));
 });
 
 //submit form info send to mail
-
-const submitData =(req , res) => {
+const submitData = (req, res) => {
   try {
-    const { name, email,phone, message, topic } = req.body;
+    const { name, email, phone, msg, topic } = req.body;
 
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: "gmail",
+      port: 465,
       auth: {
-          user: process.env.SMTP_USER, 
-          pass: process.env.SMTP_PASS,   
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
       },
-      secure: false
-  });
-  const mailOptions = {
-    from: email,  
-    to: 'toletglobetech@gmail.com',  // Recipient email address
-    subject: 'New Form Submission',
-    text: `Name: ${name}\nEmail: ${email}\n Phone:${phone}\nMessage: ${message}\n Topic: ${topic}`
-};
+      secure: true,
+    });
 
-transporter.sendMail(mailOptions, (error, info) => {
-  if (error) {
-      console.log(error);
-      res.status(400).send('Something went wrong.');
-  } else {
-      console.log('Email sent: ' + info.response);
-      res.status(200).send('Form submitted successfully!');
-  }
-});
+    const mailOptions = {
+      from: email,
+      to: "toletglobetech@gmail.com", // Recipient email address
+      subject: `Enquiry from ${name}`,
+      text: `Name: ${name}\nEmail: ${email}\n Phone:${phone}\nTopic: ${topic}\nMessage: ${msg}\n `,
+    };
 
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+        res.status(400).send("Something went wrong.");
+      } else {
+        console.log("Email sent: " + info.response);
+        res.status(200).send("Form submitted successfully!");
+      }
+    });
   } catch (err) {
     console.error(err.message);
-}   res.status(500).json("Internal server error");
-}
-
+    res.status(500).json("Internal server error");
+  }
+};
 
 module.exports = {
   createEnquiry,
   getAllEnquiries,
   getEnquiryById,
   deleteEnquiry,
-  submitData
+  submitData,
 };

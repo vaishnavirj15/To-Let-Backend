@@ -13,6 +13,7 @@ router.route("/").post(createEnquiry).get(getAllEnquiries);
 
 // route for enquiry by id
 router.route("/:enquiryId").get(getEnquiryById).delete(deleteEnquiry);
+
 router.route("/submit-data").post( submitData);
 // router.post('/submit-data', submitData);
 
