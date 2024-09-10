@@ -8,6 +8,7 @@ const {
   getFilteredProperties,
   addReview,
   deleteReview,
+  getRecentProperties
 } = require("../controllers/propertyController.js");
 const upload = require("../middlewares/multer.js");
 const authenticate = require("../middlewares/authMiddleware.js");
@@ -41,6 +42,7 @@ router.post("/add-review", addReview);
 
 router.delete("/reviews/:id", deleteReview);
 
+router.get('/recent', getRecentProperties);
 //e.g
 // GET http://localhost:8000/api/v1/property/filter?minPrice=10000&maxPrice=20000
 

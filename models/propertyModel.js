@@ -118,5 +118,7 @@ const PropertySchema = new Schema({
   ],
 });
 
+
+
 const Property = mongoose.model("Property", PropertySchema);
 module.exports = Property;

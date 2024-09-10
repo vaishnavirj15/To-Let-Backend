@@ -473,6 +473,27 @@ const deleteReview = async (req, res) => {
   }
 };
 
+
+// Fetch recent properties
+const getRecentProperties = async (req, res) => {
+  try {
+    // Fetch the most recent properties, limiting the result to 3
+    const properties = await Property.find().sort({ createdAt: -1 }).limit(3);
+
+    // Check if no recent properties are found
+    if (properties.length === 0) {
+      return res.status(404).json({ message: "No recent properties found" });
+    }
+
+    // Return the recent properties in a 200 response
+    res.status(200).json(properties);
+  } catch (error) {
+    // If an error occurs, return a 500 error response with the error message
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
 module.exports = {
   addProperty,
   updateProperty,
@@ -482,6 +503,7 @@ module.exports = {
   getFilteredProperties,
   addReview,
   deleteReview,
+  getRecentProperties
 };
 
 /**
